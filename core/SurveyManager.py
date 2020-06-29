@@ -1,7 +1,7 @@
 import csv
 
 from core.Survey import Survey
-
+from core.alias import alias_question
 
 class SurveyManager:
     """ Definition of a Survey Manager"""
@@ -110,16 +110,23 @@ class SurveyManager:
     def to_group_key(self, participant_id, question_ids, key_prefix = []):
         key = key_prefix
         for qid in question_ids:
-            response = self.survey.find_question_by_id(qid).get_responses_participant(participant_id)
+            response = self.to_question(qid).get_responses_participant(participant_id)
             response_aid = response.answer_ids[0] if response else None
             key.append(response_aid)
         return tuple(key)
 
+    def to_question(self, question_id):
+        if isinstance(question_id, int):
+            return self.survey.find_question_by_id(question_id)
+        return alias_question(
+            self.survey.find_question_by_id(question_id[0]),
+            self.survey.find_question_by_id(question_id[1])
+        )
+
     def get_stats_question_by_group(self, target_question_id, group_by_question_ids):
         # { [answer_id]: [participant_id] }
         groups = {}
-
-        by_answer = self.survey.find_question_by_id(target_question_id).get_participant_ids_per_answer()
+        by_answer = self.to_question(target_question_id).get_participant_ids_per_answer()
         for aid in by_answer:
             answer_info = by_answer[aid]
             answer_pids = answer_info["participant_ids"]
