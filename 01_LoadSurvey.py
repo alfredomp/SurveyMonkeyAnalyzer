@@ -9,7 +9,6 @@
 import argparse
 from core.SurveyManager import SurveyManager
 
-
 # -----------------------------------------------------------------------------
 # Parse the inputs
 # -----------------------------------------------------------------------------
@@ -38,8 +37,8 @@ print("")
 survey_manager = SurveyManager()
 
 survey_manager.load_survey(survey_filepath)
-
-survey_manager.get_stats_concatenated_questions([1, 14])
+print(survey_manager.get_stats_question_by_group(14, [23, 24]))
+# survey_manager.get_stats_concatenated_questions([1, 14])
 
 # print("__________________________________________")
 # survey_manager.get_stats_question(24)

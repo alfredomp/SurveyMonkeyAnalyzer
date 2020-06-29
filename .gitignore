@@ -3,3 +3,7 @@ bin/
 include/
 lib/
 pyvenv.cfg
+*.zip
+*.csv
+*/__pycache__/
+.vscode/

@@ -40,6 +40,12 @@ class Survey:
         question = self.find_question_by_id(question_id)
         return question.get_participant_ids()
 
+    def get_participant_ids_in_question_union(self, question_ids):
+        participents = set()
+        for question_id in question_ids:
+            participents.update(self.get_participant_ids_in_question(question_id))
+        return participents
+
     def print_summary_question_by_id(self, question_id):
         question = self.find_question_by_id(question_id)
         question.print_summary()

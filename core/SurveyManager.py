@@ -107,6 +107,30 @@ class SurveyManager:
     def get_stats_question(self, question_id):
         self.survey.print_summary_question_by_id(question_id)
 
+    def to_group_key(self, participant_id, question_ids, key_prefix = []):
+        key = key_prefix
+        for qid in question_ids:
+            response = self.survey.find_question_by_id(qid).get_responses_participant(participant_id)
+            response_aid = response.answer_ids[0] if response else None
+            key.append(response_aid)
+        return tuple(key)
+
+    def get_stats_question_by_group(self, target_question_id, group_by_question_ids):
+        # { [answer_id]: [participant_id] }
+        groups = {}
+
+        by_answer = self.survey.find_question_by_id(target_question_id).get_participant_ids_per_answer()
+        for aid in by_answer:
+            answer_info = by_answer[aid]
+            answer_pids = answer_info["participant_ids"]
+
+            for pid in answer_pids:
+                key = self.to_group_key(pid, group_by_question_ids, [aid])
+                groups.setdefault(key, [])
+                groups[key].append(pid)
+
+        return groups
+
     def get_stats_concatenated_questions(self, question_ids):
 
         # Get the summary of the first question
