@@ -9,11 +9,16 @@ def alias_question(q1, q2):
 
     # assumes that answer order lines up between questions
     aliased_answer_ids = {}
+    skipped = 0
     for i in range(len(q2.possible_answers)):
-        if i >= len(q1.possible_answers):
-          aliased_answer_ids[q2.possible_answers[i].id] = q2.possible_answers[i].id
-        else:
-          aliased_answer_ids[q2.possible_answers[i].id] = q1.possible_answers[i].id
+        q2_answer = q2.possible_answers[i]
+        if q2_answer.id == 157: # special casing one mismatched question
+          aliased.possible_answers.append(q2_answer)
+          aliased_answer_ids[q2_answer.id] = q2_answer.id
+          skipped = 1
+          continue
+
+        aliased_answer_ids[q2_answer.id] = q1.possible_answers[i - skipped].id
 
     for original in q2.responses:
       response = Response(original.participant_id)

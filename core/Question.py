@@ -58,8 +58,6 @@ class Question:
 
         for response in self.responses:
             for answer_id in response.answer_ids:
-                if answer_id not in responses_per_possible_answer:
-                    import pdb; pdb.set_trace()
                 responses_per_possible_answer[answer_id]['participant_ids'].append(response.participant_id)
 
         return responses_per_possible_answer
