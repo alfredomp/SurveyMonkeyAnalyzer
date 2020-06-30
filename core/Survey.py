@@ -12,11 +12,14 @@ class Survey:
         self.name = name
         self.participants = []
         self.questions = []
+        self.answers = {}
 
     def add_question_with_answers(self, question_id, question_text, possible_answers):
         question = Question(question_id, question_text)
         question.set_possible_answers(possible_answers)
         self.questions.append(question)
+        for answer in possible_answers:
+            self.answers[answer["id"]] = answer
 
     def add_participant(self, participant_id):
         participant = Participant(participant_id)
@@ -32,6 +35,9 @@ class Survey:
             if question.id == question_id:
                 return question
 
+    def find_answer_by_id(self, answer_id):
+        return self.answers.get(answer_id)
+
     def add_answer_to_question(self, participant_id, answer_id, answer_text):
         question = self.find_question_with_answer_id(answer_id, answer_text)
         question.add_response(participant_id, answer_id, answer_text)
@@ -39,12 +45,6 @@ class Survey:
     def get_participant_ids_in_question(self, question_id):
         question = self.find_question_by_id(question_id)
         return question.get_participant_ids()
-
-    def get_participant_ids_in_question_union(self, question_ids):
-        participents = set()
-        for question_id in question_ids:
-            participents.update(self.get_participant_ids_in_question(question_id))
-        return participents
 
     def print_summary_question_by_id(self, question_id):
         question = self.find_question_by_id(question_id)

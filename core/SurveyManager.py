@@ -16,8 +16,8 @@ class SurveyManager:
             # possible answers
         """
 
-        print("first_row:", len(first_row))
-        print("first_row:", len(second_row))
+        # print("first_row:", len(first_row))
+        # print("first_row:", len(second_row))
 
         row_number_entries = len(second_row)
 
@@ -137,6 +137,17 @@ class SurveyManager:
                 groups[key].append(pid)
 
         return groups
+
+    def print_stats_question_by_group(self, target_question_id, group_by_question_ids):
+        stats = self.get_stats_question_by_group(target_question_id, group_by_question_ids)
+        print(self.to_question(target_question_id).text)
+        for qid in group_by_question_ids:
+            print(self.to_question(qid).text)
+
+        for answer_ids, participant_ids in stats.items():
+            label = (self.survey.find_answer_by_id(aid) for aid in answer_ids)
+            label = ",".join([raw["text"] if raw else "None" for raw in label])
+            print(f"{label}: {len(participant_ids)}")
 
     def get_stats_concatenated_questions(self, question_ids):
 

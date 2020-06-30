@@ -26,7 +26,7 @@ input_files = {}
 survey_filepath = args.file_path_survey
 
 print("")
-print("survey_filepathsurvey_filepath:", survey_filepath)
+print("survey_filepath:", survey_filepath)
 print("")
 
 
@@ -35,9 +35,16 @@ print("")
 # =============================================================================
 
 survey_manager = SurveyManager()
-
 survey_manager.load_survey(survey_filepath)
-print(survey_manager.get_stats_question_by_group(14, [23, 24]))
+
+DELIMITER = "__________________________________________"
+BY_ETHNICITY = [(23, 46), (24, 47)]
+
+survey_manager.print_stats_question_by_group(14, [23, 24])
+print(DELIMITER)
+survey_manager.print_stats_question_by_group(37, [46, 47])
+print(DELIMITER)
+survey_manager.print_stats_question_by_group((14, 37), BY_ETHNICITY)
 # survey_manager.get_stats_concatenated_questions([1, 14])
 
 # print("__________________________________________")
