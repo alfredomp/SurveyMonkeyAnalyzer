@@ -1,4 +1,5 @@
 import csv
+import pandas
 
 from core.Survey import Survey
 from core.alias import alias_question

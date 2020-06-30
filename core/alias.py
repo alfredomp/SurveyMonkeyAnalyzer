@@ -12,7 +12,7 @@ def alias_question(q1, q2):
     skipped = 0
     for i in range(len(q2.possible_answers)):
         q2_answer = q2.possible_answers[i]
-        if q2_answer.id == 157: # special casing one mismatched question
+        if q2_answer.id == 157: # special casing one mismatched question instead of an actual solution
           aliased.possible_answers.append(q2_answer)
           aliased_answer_ids[q2_answer.id] = q2_answer.id
           skipped = 1

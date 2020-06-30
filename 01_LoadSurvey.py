@@ -69,6 +69,7 @@ class Demographics(Enum):
 for question in Questions:
     for demographic in Demographics:
         survey_manager.print_stats_question_by_group(question.value, demographic.value)
+        input("Press any key to continue.")
         print(DELIMITER)
 
 # survey_manager.print_stats_question_by_group(14, [23, 24])
