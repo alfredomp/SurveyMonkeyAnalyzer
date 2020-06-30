@@ -10,7 +10,7 @@ def alias_question(q1, q2):
     # assumes that answer order lines up between questions
     aliased_answer_ids = {}
     for i in range(len(q2.possible_answers)):
-        if i > len(q1.possible_answers):
+        if i >= len(q1.possible_answers):
           aliased_answer_ids[q2.possible_answers[i].id] = q2.possible_answers[i].id
         else:
           aliased_answer_ids[q2.possible_answers[i].id] = q1.possible_answers[i].id

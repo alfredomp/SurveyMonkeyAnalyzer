@@ -139,11 +139,11 @@ class SurveyManager:
         return groups
 
     def print_stats_question_by_group(self, target_question_id, group_by_question_ids):
-        stats = self.get_stats_question_by_group(target_question_id, group_by_question_ids)
         print(self.to_question(target_question_id).text)
         for qid in group_by_question_ids:
             print(self.to_question(qid).text)
-
+            
+        stats = self.get_stats_question_by_group(target_question_id, group_by_question_ids)
         for answer_ids, participant_ids in stats.items():
             label = (self.survey.find_answer_by_id(aid) for aid in answer_ids)
             label = ",".join([raw["text"] if raw else "None" for raw in label])
