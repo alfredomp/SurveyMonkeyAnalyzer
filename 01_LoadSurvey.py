@@ -10,7 +10,7 @@ import argparse
 from pathlib import Path
 from enum import Enum
 from core.SurveyManager import SurveyManager
-from core.plot import fix_legend
+from core.plot import format_plot
 
 # -----------------------------------------------------------------------------
 # Parse the inputs
@@ -83,8 +83,14 @@ for question in Questions:
 
         # survey_manager.print_stats_question_by_group(question.value, demographic.value)
         df = survey_manager.get_df_question_by_group(question.value, demographic.value)
-        plot = df.plot.barh(x=df.columns[0], y=df.columns[1:], figsize=(12, 8))
-        plot = fix_legend(plot, len(df[df.columns[0]].unique()))
+        plot = df.plot.barh(
+            x=df.columns[0],
+            y=df.columns[1:],
+            width=0.85,
+            figsize=(12, 8), 
+            title=survey_manager.to_question(question.value).text
+        )
+        plot = format_plot(plot)
         
         plot.get_figure().savefig(out)
         # plot.get_figure().close()
