@@ -1,8 +1,11 @@
 import csv
+import itertools
 import pandas
 
 from core.Survey import Survey
 from core.alias import alias_question
+
+NO_ANSWER = "Unknown"
 
 class SurveyManager:
     """ Definition of a Survey Manager"""
@@ -124,6 +127,10 @@ class SurveyManager:
             self.survey.find_question_by_id(question_id[1])
         )
 
+    def to_answer(self, answer_id):
+        answer = self.survey.find_answer_by_id(answer_id)
+        return answer["text"] if answer else ""
+
     def get_stats_question_by_group(self, target_question_id, group_by_question_ids):
         # { [answer_id]: [participant_id] }
         groups = {}
@@ -138,6 +145,39 @@ class SurveyManager:
                 groups[key].append(pid)
 
         return groups
+
+    def get_df_question_by_group(self, target_question_id, group_by_question_ids):
+        groups = [self.to_question(qid) for qid in group_by_question_ids]
+        target = self.to_question(target_question_id)
+        answers = [a for a in target.possible_answers]
+        columns =  [g.text for g in groups] + [a.text for a in answers]
+
+        per_target = target.get_participant_ids_per_answer()
+        keys = itertools.product(*[[a.text for a in gq.possible_answers] + [NO_ANSWER] for gq in groups])
+        data = {k[0]: {} for k in keys} # ensure expected ordering
+        for aid, answer_info in per_target.items():
+            atext = self.to_answer(aid)
+            pids = set(answer_info["participant_ids"])
+            for pid in pids:
+                responses = [gq.get_responses_participant(pid) for gq in groups]
+                keys = itertools.product(*[[self.to_answer(raid) for raid in r.answer_ids] if r else [NO_ANSWER] for r in responses])
+                for key in keys:
+                    data[key[0]].setdefault(atext, set())
+                    data[key[0]][atext].add(pid)
+                
+        rows = [[k, *[len(v.get(a.text, [])) for a in answers]] for k, v in data.items()]
+        # stats = self.get_stats_question_by_group(target_question_id, group_by_question_ids)
+
+        
+        # data = [
+        #     [self.to_answer(aid) for aid in key[1:]] + [len(pids) if key[0] == a.id else 0 for a in answers]
+        #     for key, pids in stats.items()
+        # ]
+        # import pdb; pdb.set_trace()
+        df = pandas.DataFrame(rows, columns=columns)
+        # df = df.sort_values(columns[:len(groups)])
+
+        return df
 
     def print_stats_question_by_group(self, target_question_id, group_by_question_ids):
         print(self.to_question(target_question_id).text)

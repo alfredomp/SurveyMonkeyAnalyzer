@@ -7,3 +7,4 @@ pyvenv.cfg
 *.csv
 */__pycache__/
 .vscode/
+*.png
